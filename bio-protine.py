@@ -1,16 +1,24 @@
-import mmap
+import mmap, os
 from flask import Flask
 from flask import request
 app = Flask(__name__)
+path = "./protein-codes"
+library = os.listdir(path)
+dna_seq = "gg"
+for protein in library:
+	file = os.path.join(path,protein)
+	f = open(file)
+	s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+	if s.find(dna_seq) != -1:
+		print str(s.find(dna_seq)+1)
+	else:
+		print "No matching protein subsequence found!"
 
 
-dna_seq = "attttaagttgcctgtcatttga"
-f = open("NC_007346")
-s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-if s.find(dna_seq) != -1:
-	print str(s.find(dna_seq)+1)
-else:
-	print "No matching protein subsequence found!"
+
+
+
+
 
 # @app.route('/', methods=['GET', 'POST'])
 # def get_ans():
