@@ -5,15 +5,18 @@ app = Flask(__name__)
 path = "./protein-codes"
 library = os.listdir(path)
 dna_seq = "gg"
+res = ""
 for protein in library:
 	file = os.path.join(path,protein)
 	f = open(file)
 	s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
 	if s.find(dna_seq) != -1:
-		print str(s.find(dna_seq)+1)
-	else:
-		print "No matching protein subsequence found!"
+		# print protein, str(s.find(dna_seq)+1)
+		res += "Found in "+protein+" at position -> "+str(s.find(dna_seq)+1)+"\n"
+	# else:
+	# 	print "No matching protein subsequence found!"
 
+print res
 
 
 
@@ -35,5 +38,5 @@ for protein in library:
 
 
 # if __name__ == '__main__':
-# 	app.run()
+# 	app.run()re
 
