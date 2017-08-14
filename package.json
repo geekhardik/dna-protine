@@ -11,6 +11,8 @@
     "debug": "^2.2.0",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
+    "express-session": "^1.15.5",
+    "mongodb": "^2.2.31",
     "morgan": "^1.8.2",
     "nodemon": "^1.11.0",
     "reqeust": "^2.81.1",
