@@ -3,7 +3,7 @@ var router = express.Router();
 var request = require('request');
 var mongo = require("./mongo");
 var mongoURL = "mongodb://localhost:27017/protein";
-var expressSession = require("express-session");
+// var expressSession = require("express-session");
 
 /* GET home page. */
 router.get('/signin', function(req, res, next) {
@@ -35,6 +35,7 @@ router.post('/signup', function(req, res, next) {
 		coll.insert(JSON_query, function(err, user){
 			if (user) {
 				// This way subsequent requests will know the user is logged in.
+
 				
 				json_responses = {"statusCode" : 200};
 				res.send(json_responses);
@@ -63,9 +64,9 @@ router.post('/signin', function(req, res, next) {
 				if(get_password == pass){
 					console.log("user is valid");
 					res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-					// req.session.user = {
-					// 		"user_id" : results.user_id,
-					// };
+					req.session.user = {
+							"username" : results.user_id,
+					};
 					res.send({"statusCode" : 200});	
 				}else{
 					console.log("user is not valid");
@@ -80,6 +81,21 @@ router.post('/signin', function(req, res, next) {
 	});
 });
 
+router.post('/getHistory', function(req, res, next) {
+	
+	mongo.connect(mongoURL, function(){
+		console.log('Connected to mongo at: ' + mongoURL);
+		var coll = mongo.collection('history');
+
+		coll.find({"user" : req.session.user}).toArray(function(err, results){
+			if (results.length > 0 ) {
+				res.send({"history" : results});							
+			} else {
+				logger.log('info','getHistory query was failed');
+			}
+		});
+	});	
+});
 
 
 
@@ -91,10 +107,28 @@ router.post('/dna', function(req, res, next) {
     // body: '{"foo": "bar"}'
     json: {"dna_seq": dna_seq}
 	}, (error, response, body) => {
-    console.log(error);
-    // console.log(response);
-    console.log(body);
-    res.send({"result" : body});
+
+	    // console.log(response);
+	    console.log(body);
+	    var JSON_query = {
+							"user" : req.session.user,
+							"seq" : dna_seq,
+							"result" : body
+							
+						};
+
+		mongo.connect(mongoURL, function(){
+		console.log('Connected to mongo at: ' + mongoURL);
+		var coll = mongo.collection('history');
+		    coll.insert(JSON_query, function(err, results){
+						
+				if (results) {
+					res.send({"result" : body});
+				} else {
+					res.send({"result" : "500"})
+				}
+			});
+		});
 	});
 
 });
@@ -102,54 +136,7 @@ router.post('/dna', function(req, res, next) {
 
 
 
-router.post('/calc', function(req, res, next) {
-	
-//	console.log("inside function");
-	var temp1 = req.body.num1;
-//	var num1 = req.param('num1');
-	var temp2 = req.body.num2;
-	var opr = req.body.operation;
-	var result;
-	
-	var num1 = Number(temp1);
-	var num2 = Number(temp2);
-	
-	
-	console.log(num1);
-	console.log(num2);
-	console.log(opr);
-	console.log(typeof num1);
-	
-	
-	//check incoming!
-	if((isNaN(Number(num1) && isNaN(Number(num2))))){
-		res.send({"msg" : "Invalid"});
-	}else{
-		switch(opr){
-		case '+':
-			result = num1+num2;
-			break;
-		case '-':
-			result = num1-num2;
-			break;
-		case '*':
-			result = num1*num2;
-			break;
-		case '/':
-			result = num1/num2;
-			break;
-		
-		}
-		console.log("node : " + result);
-		
-		/*if(result == Infinity){
-			
-		}*/
-		
-		
-		res.send({"result" : result});
-	}	
-});
+
 
 
 module.exports = router;

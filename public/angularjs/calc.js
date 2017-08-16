@@ -3,10 +3,19 @@ var app = angular.module('calc',[]);
 
 app.controller('calc',function($scope,$http){
 	
-	  // var operation;
-	  // $scope.operation = function(x){
-	  //   operation = x;
-	  // }
+	$scope.load = function(){	
+		$http({			
+			method: "POST",
+			url : '/getHistory',						
+		}).success(function(data){
+			if(data.history){
+				console.log(data.history);
+				$scope.history = data.history;
+			}else{
+				alert("somthing's wrong in callback of retrieval of history");
+			}
+		});	
+	};  
 
 	$scope.calculate= function(){
 		
@@ -20,17 +29,16 @@ app.controller('calc',function($scope,$http){
 			}		
 		}).success(function(data){
 			console.log(data.result);
-			if(data.result == null || data.result == undefined){
-				$scope.result = "Something wrong!";
+			if(data.result == "500"){
+				$scope.result = "Something wrong in retrieval of result!";
 			}else{
 				$scope.result = data.result;
+				$scope.load();
 			}
 			
 			
 		}).error(function(error){
-			console.log(data.msg);
-			$scope.result = data.msg;
-			
+			$scope.result = "Oops.. Something went wrong! please try again later!";
 		});
 	}
 			

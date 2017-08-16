@@ -40,20 +40,24 @@ def get_ans():
 		obj = request.get_json()
 		dna_seq = obj['dna_seq'];
 		result = {}
+		res = ""
 		for protein in library:
 			file = os.path.join(path,protein)
 			f = open(file)
 			s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
 			if s.find(dna_seq) != -1:
-				# res += "\nFound in "+protein+" at position -> "+str(s.find(dna_seq)+1)+"\n"
-				result[protein] = s.find(dna_seq)+1
-				results = json.dumps(result)
-
-		if(results == {}):
-			result['none'] = "No matching protein subsequence found!"
-			results = json.dumps(result)
+				res += "\nFound in "+protein+" at index-> "+str(s.find(dna_seq)+1)+"<br>"
+				# result[protein] = s.find(dna_seq)+1
+				# results = json.dumps(result)
 		
-		return jsonify({'result': results})
+		# if(results == {}):
+		# 	result['none'] = "No matching protein subsequence found!"
+		# 	results = json.dumps(result)
+		if(res == ""):
+			res = "No matching protein subsequence found!"
+		
+		return str(res)
+		
 
 if __name__ == '__main__':
 	app.run()
