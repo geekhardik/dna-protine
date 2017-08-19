@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Bio-Protein</title>
    <link rel='stylesheet' href='/stylesheets/style.css' /> 
 	<script	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="angularjs/calc.js"></script>
@@ -17,26 +17,48 @@
   
    
   <body ng-app="calc" ng-controller="calc" class="container" ng-init="load();">
+
+  <h3><span type="button" class="btn btn-success" ng-click="signout()" style="text-align: right;">signout</span></h3>
    
     <div class="container" style="border: 1px solid">
       
-      <h1>Welcome to DNA sequence analyzer</h1><br><br><br>
+      <h1 style="text-align: center;">Welcome <%= username %> to DNA sequence analyzer</h1>
+
+
+
+      <br><br><br>
     <div class="row">
       <div class="col-lg-3"></div>
        <div class="col-lg-6">
 
      <input id="seq" ng-model="seq" placeholder="Enter DNA sequence" required> <br><br><br>
     <input type="submit" value="analyze!" ng-click="calculate();"><br><br><br>
-    <h1>Output : </h1>
-      {{result}}
-    <h1>History</h1>
-     <table class="table table-hover">
+    <h1>Result : </h1>
+      <div style="text-align: center;" ng-repeat = "y in result"><strong>{{y}}</strong><br/></div>
+    <h1>Result History</h1>
+    <table class="table table-hover table-bordered">
+    
+    <thead>
+      <tr>
+        <th class="col-sm-1 col-md-1 text-center">Sequence</th>
+        <th class="col-sm-1 col-md-1 text-center">Result</th>
+        <th class="col-sm-1 col-md-1 text-center">TimeStamp</th>
+      </tr>
+    </thead>
+
+
     <tr ng-repeat="x in history">
-                        
-                        
-                        <td class="col-sm-1 col-md-1" style="text-align: center">{{x.seq}}</td>
-                        <td class="col-sm-1 col-md-1 text-center"><strong>{{x.result}}</strong></td>
-                        
+        <td class="col-sm-1 col-md-1" style="text-align: center"><strong>{{x.seq}}</strong></td>
+        <td class="col-sm-1 col-md-1 text-center">
+            <strong>
+              <div ng-repeat = "y in x.result">{{y}}<br/></div>
+            </strong>
+        </td>
+        <td class="col-sm-1 col-md-1 text-center">
+          <strong>
+              {{x.timestamp}}<br/>
+          </strong>
+        </td>
     </tr>
      <table class="table table-hover">
    </div>

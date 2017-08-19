@@ -8,14 +8,35 @@ app.controller('calc',function($scope,$http){
 			method: "POST",
 			url : '/getHistory',						
 		}).success(function(data){
-			if(data.history){
-				console.log(data.history);
+			if(data.history!="500"){
 				$scope.history = data.history;
 			}else{
-				alert("somthing's wrong in callback of retrieval of history");
+				
 			}
 		});	
 	};  
+
+	$scope.signout = function(){
+		
+	
+			$http({			
+				method: "POST",
+				url : '/logout',
+							
+			}).success(function(data){
+				if (data.statusCode != 200) {
+					alert("somthing's wrong in logout");
+				}
+				else
+					//Making a get call to the '/redirectToHomepage' API
+					alert("You are successfully logged out");
+					window.location.assign("/signin");
+				
+			}).error(function(error){
+				alert("somthing's wrong in logout");
+			});
+		
+}	
 
 	$scope.calculate= function(){
 		

@@ -41,12 +41,17 @@ def get_ans():
 		dna_seq = obj['dna_seq'];
 		result = {}
 		res = ""
+
 		for protein in library:
 			file = os.path.join(path,protein)
 			f = open(file)
 			s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
 			if s.find(dna_seq) != -1:
-				res += "\nFound in "+protein+" at index-> "+str(s.find(dna_seq)+1)+"<br>"
+				
+				temp =  s.find(dna_seq);
+				
+
+				res += protein+" -> "+str(temp)+','
 				# result[protein] = s.find(dna_seq)+1
 				# results = json.dumps(result)
 		

@@ -2,16 +2,34 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var mongo = require("./mongo");
+var moment = require("moment");
 var mongoURL = "mongodb://localhost:27017/protein";
 // var expressSession = require("express-session");
 
 /* GET home page. */
 router.get('/signin', function(req, res, next) {
-	  res.render('signin', { title: 'Calculator' });
+	  res.render('signin', { title: 'Bio-Protei' });
+});
+
+router.get('/', function(req, res, next) {
+	  res.render('signin', { title: 'Bio-Protein' });
 });
 
 router.get('/home', function(req, res, next) {
-	  res.render('index', { title: 'Calculator' });
+	if(req.session.user){
+		json_name = req.session.user.username;
+	}else{
+		json_name = "Guest";
+	}
+
+	  res.render('index', {username: json_name});
+	
+});
+
+router.post('/logout', function(req, res, next) {
+	req.session.destroy();	
+	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+	res.send({"statusCode" : 200});
 });
 
 router.post('/signup', function(req, res, next) {
@@ -82,19 +100,20 @@ router.post('/signin', function(req, res, next) {
 });
 
 router.post('/getHistory', function(req, res, next) {
-	
+	if(req.session.user){
 	mongo.connect(mongoURL, function(){
 		console.log('Connected to mongo at: ' + mongoURL);
 		var coll = mongo.collection('history');
 
-		coll.find({"user" : req.session.user}).toArray(function(err, results){
+		coll.find({"user" : req.session.user}).sort({_id:-1}).toArray(function(err, results){
 			if (results.length > 0 ) {
 				res.send({"history" : results});							
 			} else {
-				logger.log('info','getHistory query was failed');
+				res.send({"history" : "500"});
 			}
 		});
 	});	
+	}
 });
 
 
@@ -110,10 +129,17 @@ router.post('/dna', function(req, res, next) {
 
 	    // console.log(response);
 	    console.log(body);
+	    var data = body.split(",");
+	    var now = moment()
+		var formatted = now.format('YYYY-MM-DD HH:mm:ss Z')
+		console.log(formatted)
+
+
 	    var JSON_query = {
 							"user" : req.session.user,
 							"seq" : dna_seq,
-							"result" : body
+							"timestamp" : formatted,
+							"result" : data
 							
 						};
 
@@ -123,7 +149,7 @@ router.post('/dna', function(req, res, next) {
 		    coll.insert(JSON_query, function(err, results){
 						
 				if (results) {
-					res.send({"result" : body});
+					res.send({"result" : data});
 				} else {
 					res.send({"result" : "500"})
 				}
