@@ -17,8 +17,6 @@ pip install Flask || true
  echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list || true
  apt-get update || true
  apt-get install -y mongodb-org || true
-service mongod start &
-python bio-protine.py & 
-path='bin'
-cd "$path"
-sudo nohup node www &
+nohup service mongod start &
+nohup python bio-protine.py & 
+nohup npm start &
