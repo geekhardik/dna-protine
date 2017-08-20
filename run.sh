@@ -19,4 +19,6 @@ pip install Flask || true
  apt-get install -y mongodb-org || true
 service mongod start &
 python bio-protine.py & 
-npm start &
+path='bin'
+cd "$path"
+sudo nohup node www &
