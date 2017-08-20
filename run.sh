@@ -6,13 +6,17 @@
 # Python-2.7.10/`make altinstall`
 
  apt-get update || true
- sudo pip install Flask || true
+apt-get install python-pip || true 
+pip install virtualenv || true
+virtualenv venv || true
+source venv/bin/activate || true
+pip install Flask || true
  apt-get install nodejs || true
  apt-get install npm || true
  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 || true
  echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list || true
  apt-get update || true
  apt-get install -y mongodb-org || true
- python bio-protine.py 
- service mongod start
- npm start
+service mongod start &
+python bio-protine.py & 
+npm start &

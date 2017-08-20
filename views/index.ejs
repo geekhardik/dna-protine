@@ -36,7 +36,7 @@
     <h1>Result : </h1>
       <div style="text-align: center;" ng-repeat = "y in result"><strong>{{y}}</strong><br/></div>
     <h1>Result History</h1>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-responsive table-bordered">
     
     <thead>
       <tr>
@@ -48,7 +48,7 @@
 
 
     <tr ng-repeat="x in history">
-        <td class="col-sm-1 col-md-1" style="text-align: center"><strong>{{x.seq}}</strong></td>
+        <td class="col-sm-1 col-md-1" style="word-wrap: break-word;min-width: 160px;max-width: 160px; text-align: center;"><strong>{{x.seq}}</strong></td>
         <td class="col-sm-1 col-md-1 text-center">
             <strong>
               <div ng-repeat = "y in x.result">{{y}}<br/></div>
